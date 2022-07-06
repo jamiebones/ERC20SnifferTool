@@ -2,28 +2,20 @@ import models from "../models";
 import mongoose from "mongoose";
 import config from "../config";
 
-let timesTried = 0;
 
 export const fastConnection = async () => {
-  const {
-    DB_DATABASE,
-    DB_HOST,
-    DB_PORT
-  } = config.config;
-
+  const { DB_DATABASE, DB_HOST, DB_PORT } = config.config;
 
   let url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
-  console.log("the url:", url)
+  console.log("the url:", url);
 
   try {
     const conn = await runConnection(url);
     return models(conn);
   } catch (error) {
-    while (timesTried < 3) {
-      timesTried++;
+      console.log("database connection error is", error)
       const conn = await runConnection(url);
       return models(conn);
-    }
   }
 };
 

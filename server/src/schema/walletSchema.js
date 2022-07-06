@@ -1,10 +1,17 @@
 import { gql } from "apollo-server-express";
 
+
+const token = `
+  tokenValue: String
+  timeStamp: Date 
+`
+
 const walletInputData = `
   walletAddress: ID!
-  tokenAddress:ID!
-  token: Token
+  tokenAddress: ID!
 `
+
+
 
 export default gql`
 
@@ -18,6 +25,7 @@ export default gql`
 
   input WalletTokenInput {
     ${walletInputData}
+    token: TokenInput
   }
 
   type WalletToken {
@@ -27,8 +35,11 @@ export default gql`
   }
 
   type Token {
-    tokenValue: String
-    timeStamp: Date
+    ${token}
+  }
+
+  input TokenInput {
+    ${token}
   }
 
 

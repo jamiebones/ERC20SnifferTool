@@ -2,7 +2,6 @@ import models from "../models";
 import mongoose from "mongoose";
 import config from "../config";
 
-let timesTried = 0;
 export const slowConnection =  async () => {
   const {
     DB_PORT,
@@ -18,13 +17,13 @@ export const slowConnection =  async () => {
     const conn = await runConnection(url);
     return models(conn);
   } catch (error) {
-    while (timesTried < 3) {
-      timesTried++;
+    console.log("database connection error is", error)
       const conn = await runConnection(url);
       return models(conn);
     }
+    
   }
-};
+
 
 const runConnection = async function (url) {
   const conn = await mongoose.createConnection(url, {

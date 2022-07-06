@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+
+  server:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    depends_on:
+      - mongo_db
+    restart: always
+    ports:
+      - 4000:4000
+    environment:
+      DB_HOST: mongo_db ## same as the database service name
+      DB_PORT: 27017
+      DB_DATABASE: snifertooldatabase
+   
+  mongo_db:
+    hostname: mongo_db
+    container_name: mongo_db
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    restart: always
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--journal",
+        "--dbpath",
+        "/data/db"
+      ]
+    volumes:
+      - $HOME/SniferTool_data/data1/db:/data/db # 
+      - $HOME/SniferTool_data/data1/configdb:/data/configdb
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8085:8085
+    depends_on:
+      - mongo_db
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo_db
+      ME_CONFIG_BASICAUTH_USERNAME: jamiebones
+      ME_CONFIG_BASICAUTH_PASSWORD: blazing147
